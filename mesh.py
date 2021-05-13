@@ -11,7 +11,7 @@ from ifcfunctions import meshfromshape
 start_time = time.time()
 
 
-ifc_file = ifcopenshell.open('ifcmodels/apartment.ifc')
+ifc_file = ifcopenshell.open('ifcmodels/smileywest.ifc')
 
 settings = ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS, True)
