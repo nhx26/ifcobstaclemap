@@ -11,7 +11,7 @@ meshlist=[]
 levels=[]
 
 
-ifc_file = ifcopenshell.open('ifcmodels/ac20.ifc')
+ifc_file = ifcopenshell.open('ifcmodels/smileywest.ifc')
 
 unitfactor = getunitfactor(ifc_file)
 
