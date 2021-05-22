@@ -50,6 +50,24 @@ def meshfromshape(shape, color):
 
 	return mesh
 
+def rawmeshfromshape(shape):
+
+	verts = shape.geometry.verts
+	edges = shape.geometry.edges 
+	faces = shape.geometry.faces
+
+
+
+
+	procverts = [verts[i:i+3] for i in range(0,len(verts), 3)]
+
+	procedges = [edges[i : i + 2] for i in range(0, len(edges), 2)]
+
+	procfaces = [tuple(faces[i : i + 3]) for i in range(0, len(faces), 3)]
+
+
+	return procverts,procedges,procfaces
+
 
 def findanchor(item):
 	item = item.ObjectPlacement

@@ -6,7 +6,7 @@ import numpy as np
 
 import time
 
-from ifcfunctions import meshfromshape
+from ifcfunctions import meshfromshape, getunitfactor
 
 start_time = time.time()
 
@@ -17,8 +17,19 @@ settings = ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS, True)
 
 meshlist=[]
-shapelist=[]
+levels=[]
 
+unitfactor = getunitfactor(ifc_file)
+
+storeys = ifc_file.by_type('IfcBuildingStorey')
+
+elements = ifc_file.by_type('IfcElement')
+
+for storey in storeys:
+
+    levels.append(storey.ObjectPlacement.RelativePlacement.Location[0][2])
+
+print(levels)
 
 
 
@@ -43,74 +54,55 @@ for ifc_entity in ifc_file.by_type('IfcElement'): #iterating through every ifcel
 		meshlist.append(mesh)
 
 
-
 combined = trimesh.util.concatenate(meshlist)
 
-combined.show()
+#combined.show()
+
+for level in levels:
 
 
-myslice = combined.section(plane_origin=[0,0,0], plane_normal=[0,0,1])
+  myslice = combined.section(plane_origin=[0,0,(level/unitfactor)], plane_normal=[0,0,1])
 
 
-slice_2D, to_3D = myslice.to_planar()
-#slice_2D.show()
+  slice_2D, to_3D = myslice.to_planar()
+  #slice_2D.show()
 
-print("--- %s seconds ---" % (time.time() - start_time))
-slice_2D.show()
-
-
-
-
-
-
-plt.axes().set_aspect('equal', 'datalim')
-# hardcode a format for each entity type
-eformat = {'Line0': {'color': 'g', 'linewidth': 1},
-       'Line1': {'color': 'y', 'linewidth': 1},
-       'Arc0': {'color': 'r', 'linewidth': 1},
-       'Arc1': {'color': 'b', 'linewidth': 1},
-       'Bezier0': {'color': 'k', 'linewidth': 1},
-       'Bezier1': {'color': 'k', 'linewidth': 1},
-       'BSpline0': {'color': 'm', 'linewidth': 1},
-       'BSpline1': {'color': 'm', 'linewidth': 1}}
-for entity in slice_2D.entities:
-    # if the entity has it's own plot method use it
-    if hasattr(entity, 'plot'):
-        entity.plot(slice_2D.vertices)
-        continue
-    # otherwise plot the discrete curve
-    discrete = entity.discrete(slice_2D.vertices)
-    # a unique key for entities
-    e_key = entity.__class__.__name__ + str(int(entity.closed))
-
-    fmt = eformat[e_key].copy()
-    if hasattr(entity, 'color'):
-        # if entity has specified color use it
-        fmt['color'] = 'black'#entity.color
-    plt.plot(*discrete.T,0, **fmt)
-
-
-#plt.show()
+  print("--- %s seconds ---" % (time.time() - start_time))
+  
+  #slice_2D.show()
 
 
 
 
 
 
+  plt.axes().set_aspect('equal', 'datalim')
+  # hardcode a format for each entity type
+  eformat = {'Line0': {'color': 'g', 'linewidth': 1},
+         'Line1': {'color': 'y', 'linewidth': 1},
+         'Arc0': {'color': 'r', 'linewidth': 1},
+         'Arc1': {'color': 'b', 'linewidth': 1},
+         'Bezier0': {'color': 'k', 'linewidth': 1},
+         'Bezier1': {'color': 'k', 'linewidth': 1},
+         'BSpline0': {'color': 'm', 'linewidth': 1},
+         'BSpline1': {'color': 'm', 'linewidth': 1}}
+  for entity in slice_2D.entities:
+      # if the entity has it's own plot method use it
+      if hasattr(entity, 'plot'):
+          entity.plot(slice_2D.vertices)
+          continue
+      # otherwise plot the discrete curve
+      discrete = entity.discrete(slice_2D.vertices)
+      # a unique key for entities
+      e_key = entity.__class__.__name__ + str(int(entity.closed))
 
-# mesh = meshfromshape(shape)
-# mesh.show()
-# myslice = mesh.section(plane_origin=[0,0,0], plane_normal=[0,0,1])
-# myslice.show()
+      fmt = eformat[e_key].copy()
+      if hasattr(entity, 'color'):
+          # if entity has specified color use it
+          fmt['color'] = 'black'#entity.color
+      plt.plot(*discrete.T,0, **fmt)
 
 
-		#meshlist.append(mesh)
-        
-
-
-
-
-
-#myslice = combined.section(plane_origin=combined.centroid,plane_normal=[0,0,1])
-#myslice.show()
+  plt.show()
+  plt.clear()
 
