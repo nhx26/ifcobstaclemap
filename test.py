@@ -6,4 +6,14 @@ ifc_file = ifcopenshell.open('ifcmodels/simplehouse.ifc')
 
 project = ifc_file.by_type('IfcProject')
 
-print(project[0].IsDefinedBy)
+walls = ifc_file.by_type('IfcWall')
+
+wall = walls[0]
+
+spaces = ifc_file.by_type('IfcSpace')
+
+space = spaces[0]
+
+for item in ifc_file.get_inverse(space):
+	if item.is_a('IfcRelSpaceBoundary'):
+		print(item.RelatedBuildingElement)

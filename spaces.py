@@ -24,15 +24,17 @@ for space in ifc_file.traverse(storey.IsDecomposedBy[0]):
 		spaces.append(space)
 
 for space in spaces[:1]:
-	for relspaceboundary in space.BoundedBy:
-		if relspaceboundary.RelatedBuildingElement is not None:
-			element = relspaceboundary.RelatedBuildingElement
-		print(element[1])
-		if element.Representation is not None:
-			shape = geom.create_shape(settings, element)
-			verts,edges,faces = rawmeshfromshape(shape)
-			#print(verts,edges,faces)
 
+	for item in ifc_file.get_inverse(space):
+		if item.is_a('IfcRelSpaceBoundary'):
+			
+			element = item.RelatedBuildingElement
+			print(element)
+			if element.Representation is not None:
+				shape = geom.create_shape(settings, element)
+				verts,edges,faces = rawmeshfromshape(shape)
+
+	
 			
 
 
