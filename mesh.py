@@ -59,7 +59,7 @@ for ifc_entity in ifc_file.by_type('IfcElement'): #iterating through every ifcel
 
 combined = trimesh.util.concatenate(meshlist)
 
-combined.export('combined.stl')
+combined.export('combined.ply')
 for level in levels:
 
 
