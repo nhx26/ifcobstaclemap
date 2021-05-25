@@ -11,7 +11,7 @@ from ifcfunctions import meshfromshape, getunitfactor
 start_time = time.time()
 
 
-ifc_file = ifcopenshell.open('ifcmodels/simplehouse.ifc')
+ifc_file = ifcopenshell.open('ifcmodels/institute.ifc')
 
 settings = ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS, True)
@@ -58,7 +58,7 @@ for ifc_entity in ifc_file.by_type('IfcElement'): #iterating through every ifcel
 
 
 combined = trimesh.util.concatenate(meshlist)
-
+combined.show()
 combined.export('combined.ply')
 for level in levels:
 
@@ -98,10 +98,10 @@ for level in levels:
       fmt = eformat[e_key].copy()
       if hasattr(entity, 'color'):
           # if entity has specified color use it
-          fmt['color'] = entity.color
+          fmt['color'] = 'black'
       plt.plot(*discrete.T,0, **fmt)
 
 
-  #plt.show()
+  plt.show()
 
 
