@@ -11,7 +11,7 @@ from ifcfunctions import meshfromshape, getunitfactor
 start_time = time.time()
 
 
-ifc_file = ifcopenshell.open('ifcmodels/smileywest.ifc')
+ifc_file = ifcopenshell.open('ifcmodels/simplehouse.ifc')
 
 settings = ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS, True)
@@ -26,8 +26,7 @@ storeys = ifc_file.by_type('IfcBuildingStorey')
 elements = ifc_file.by_type('IfcElement')
 
 for storey in storeys:
-
-    levels.append(storey.ObjectPlacement.RelativePlacement.Location[0][2])
+  levels.append(storey.ObjectPlacement.RelativePlacement.Location[0][2])
 
 print(levels)
 
@@ -36,28 +35,31 @@ print(levels)
 
 
 for ifc_entity in ifc_file.by_type('IfcElement'): #iterating through every ifcelement
+  if ifc_entity.is_a('IfcOpeningElement'):
+		  continue #skipping IfcOpeningElement because its not useful to obstacle map?
+  if ifc_entity.Representation is None: #skipping elements that have no representation
+      continue 
 
-	if ifc_entity.is_a('IfcOpeningElement'):
-		continue #skipping IfcOpeningElement because its not useful to obstacle map?
-	if ifc_entity.is_a('IfcDoor'):
+  shape = geom.create_shape(settings, ifc_entity)
+    
+  if ifc_entity.is_a('IfcDoor'):
+      meshcolor = [0,255,0,100]
+  elif ifc_entity.is_a('IfcStair'):
+      meshcolor = [255,255,0,100]
+  else:
+      meshcolor = [0,0,0,90]
 
-		shape = geom.create_shape(settings, ifc_entity) #creating shape of element
-		mesh = meshfromshape(shape, [0,255,0,100]) #creating mesh from shape, specifying color
-		meshlist.append(mesh) #adding to list of meshes
 
 
-	if ifc_entity.Representation is None: #skipping elements that have no rep
-		continue 
-	else:
-		shape = geom.create_shape(settings, ifc_entity)
-		mesh = meshfromshape(shape,[0,0,0,5])
-		meshlist.append(mesh)
+		
+  mesh = meshfromshape(shape,meshcolor) #creating mesh from shape, specifying color
+  meshlist.append(mesh) #adding to list of meshes
+  
 
 
 combined = trimesh.util.concatenate(meshlist)
 
-#combined.show()
-
+combined.export('combined.stl')
 for level in levels:
 
 
@@ -67,11 +69,8 @@ for level in levels:
   slice_2D, to_3D = myslice.to_planar()
   #slice_2D.show()
 
-  print("--- %s seconds ---" % (time.time() - start_time))
   
-  #slice_2D.show()
-
-
+  
 
 
 
@@ -99,10 +98,10 @@ for level in levels:
       fmt = eformat[e_key].copy()
       if hasattr(entity, 'color'):
           # if entity has specified color use it
-          fmt['color'] = 'black'#entity.color
+          fmt['color'] = entity.color
       plt.plot(*discrete.T,0, **fmt)
 
 
-  plt.show()
-  plt.clear()
+  #plt.show()
+
 
