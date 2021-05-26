@@ -34,8 +34,6 @@ for space in spaces[:1]:
 				shape = geom.create_shape(settings, element)
 				verts,edges,faces = rawmeshfromshape(shape)
 
-	
-			
 
 
 

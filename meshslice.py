@@ -1,5 +1,5 @@
 import pyvista as pv
-import matplotlib.pyplot as plt
+
 
 mesh = pv.read('combined.ply')
 #cpos=mesh.plot()
@@ -13,7 +13,4 @@ actor = p.add_mesh(single_slice,show_scalar_bar=False,cmap=['black','green','yel
 p.set_focus(single_slice.center)
 p.camera_set = True
 #p.remove_actor(actor)
-#p.show(screenshot='OM.png')
-
-plt.imshow(p.image)
-plt.show()
+p.show(screenshot='OM.png')

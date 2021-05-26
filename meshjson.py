@@ -5,7 +5,7 @@ from ifcfunctions import rawmeshfromshape, meshfromshape
 
 
 
-ifc_file = ifcopenshell.open('ifcmodels/ifctest.ifc')
+ifc_file = ifcopenshell.open('ifcmodels/institute.ifc')
 
 settings = ifcopenshell.geom.settings()
 settings.set(settings.USE_WORLD_COORDS, True)
@@ -25,11 +25,18 @@ for ifc_entity in ifc_file.by_type('IfcElement'): #iterating through every ifcel
 								'edges':edges,
 								'faces':faces,
 								'type':ifc_entity.is_a(),
+
 								
 		}
-		if ifc_entity.is_a('IfcDoorType'):
-			mesh_dict[ifc_entity.GlobalId].update({'operationtype':ifc_entity.OperationType})
+		if ifc_entity.is_a('IfcDoor'):
+			mesh_dict[ifc_entity.GlobalId].update({
 
+				'operationtype':ifc_entity.IsTypedBy[0].RelatingType.OperationType,
+				'width':ifc_entity.OverallWidth,
+				'height':ifc_entity.OverallHeight,
+
+
+				})
 
 
 json_object = json.dumps(mesh_dict, indent = 4)  

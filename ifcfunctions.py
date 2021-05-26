@@ -65,6 +65,7 @@ def rawmeshfromshape(shape):
 
 	procfaces = [tuple(faces[i : i + 3]) for i in range(0, len(faces), 3)]
 
+	
 
 	return procverts,procedges,procfaces
 
