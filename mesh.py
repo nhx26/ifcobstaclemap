@@ -3,12 +3,13 @@ import ifcopenshell.geom as geom
 import trimesh
 import matplotlib.pyplot as plt
 import numpy as np
+import pyvista as pv
 
 import time
 
 from ifcfunctions import meshfromshape, getunitfactor
 
-start_time = time.time()
+arsheight = 0.5
 
 
 ifc_file = ifcopenshell.open('ifcmodels/institute.ifc')
@@ -58,50 +59,45 @@ for ifc_entity in ifc_file.by_type('IfcElement'): #iterating through every ifcel
 
 
 combined = trimesh.util.concatenate(meshlist)
-combined.show()
+
 combined.export('combined.ply')
+
+
+mesh = pv.read('combined.ply')
+
 for level in levels:
+  single_slice = mesh.slice(normal=[0, 0, 1],origin=[0,0,(level/unitfactor+0.5)])
+  p = pv.Plotter()
+  p.set_background("white")
+  actor = p.add_mesh(single_slice,show_scalar_bar=False,cmap=['black','green','yellow'])
+  p.set_focus(single_slice.center)
+  p.camera_set = True
+  p.show(screenshot='OMs/{0}.png'.format(level))
+  p.remove_actor(actor)
 
 
-  myslice = combined.section(plane_origin=[0,0,(level/unitfactor)], plane_normal=[0,0,1])
 
 
-  slice_2D, to_3D = myslice.to_planar()
-  #slice_2D.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
-  
-
-
-
-
-  plt.axes().set_aspect('equal', 'datalim')
-  # hardcode a format for each entity type
-  eformat = {'Line0': {'color': 'g', 'linewidth': 1},
-         'Line1': {'color': 'y', 'linewidth': 1},
-         'Arc0': {'color': 'r', 'linewidth': 1},
-         'Arc1': {'color': 'b', 'linewidth': 1},
-         'Bezier0': {'color': 'k', 'linewidth': 1},
-         'Bezier1': {'color': 'k', 'linewidth': 1},
-         'BSpline0': {'color': 'm', 'linewidth': 1},
-         'BSpline1': {'color': 'm', 'linewidth': 1}}
-  for entity in slice_2D.entities:
-      # if the entity has it's own plot method use it
-      if hasattr(entity, 'plot'):
-          entity.plot(slice_2D.vertices)
-          continue
-      # otherwise plot the discrete curve
-      discrete = entity.discrete(slice_2D.vertices)
-      # a unique key for entities
-      e_key = entity.__class__.__name__ + str(int(entity.closed))
-
-      fmt = eformat[e_key].copy()
-      if hasattr(entity, 'color'):
-          # if entity has specified color use it
-          fmt['color'] = 'black'
-      plt.plot(*discrete.T,0, **fmt)
-
-
-  plt.show()
-
 
