@@ -44,11 +44,11 @@ for ifc_entity in ifc_file.by_type('IfcElement'): #iterating through every ifcel
   shape = geom.create_shape(settings, ifc_entity)
     
   if ifc_entity.is_a('IfcDoor'):
-      meshcolor = [0,255,0,255]
+      meshcolor = [0,255,0,100]
   elif ifc_entity.is_a('IfcStair'):
-      meshcolor = [255,255,0,255]
+      meshcolor = [255,255,0,100]
   else:
-      meshcolor = [0,0,0,255]
+      meshcolor = [0,0,0,100]
 
 
 
@@ -73,7 +73,7 @@ for level in levels:
   #single_slice = mesh.slice(normal=[0, 0, 1],origin=[0,0,(level/unitfactor+arsheight)])
   p = pv.Plotter()
   p.set_background("white")
-  actor = p.add_mesh(slices,show_scalar_bar=False,cmap=['black','green','blue'])
+  actor = p.add_mesh(slices,show_scalar_bar=False,cmap=['black','green','yellow'])
   
   #p.set_focus(slices.center)
 

@@ -3,10 +3,10 @@ IFC parser and semantic obstacle map generator for autonomous applications.
 
 Uses IFCOpenShell on Python.
 
-Prereq: IFCOpenShell, Trimesh
+Prereq: IFCOpenShell, Trimesh, PyVista
 
-mesh.py takes in an IFC file and generates an obstacle map of the ground floor
+obstaclemaps.py takes in an IFC file and generates an obstacle map for each story.
 
-mesh_mp.py takes in an IFC file and generates an obstacle map of every floor.
+ifctojson extracts relevant navigation information from the IFC and stores it in a JSON file
 
-mesh_mp uses multiprocessing and is faster, but less robust as it is currently not working for some IFC files
+
